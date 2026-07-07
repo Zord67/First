@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Sequence &mdash; Premium Board Game</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Ambient background layers -->
+<div class="bg-felt"></div>
+<div class="bg-vignette"></div>
+
+<div class="app" id="app">
+
+  <!-- ============ HEADER ============ -->
+  <header class="topbar glass">
+    <div class="brand">
+      <span class="brand-mark">&#9830;</span>
+      <h1>Sequence</h1>
+      <span class="brand-sub">Table Ten</span>
+    </div>
+
+    <div class="turn-indicator" id="turnIndicator">
+      <div class="turn-chip" id="turnChipDot"></div>
+      <div class="turn-text">
+        <span class="turn-label">Now Playing</span>
+        <span class="turn-player" id="turnPlayerName">Player 1</span>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <button class="icon-btn" id="soundToggleBtn" title="Toggle sound" aria-label="Toggle sound">
+        <svg id="soundOnIcon" viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M4 9v6h4l5 5V4L8 9H4z"/><path fill="currentColor" d="M16.5 12a4.5 4.5 0 0 0-2.25-3.9v7.8A4.5 4.5 0 0 0 16.5 12z"/></svg>
+        <svg id="soundOffIcon" viewBox="0 0 24 24" width="20" height="20" style="display:none"><path fill="currentColor" d="M4 9v6h4l5 5V4L8 9H4z"/><path fill="currentColor" d="M19 12l2.5-2.5-1.4-1.4L17.6 10.6 15.1 8.1 13.7 9.5 16.2 12l-2.5 2.5 1.4 1.4 2.5-2.5 2.5 2.5 1.4-1.4L19 12z"/></svg>
+      </button>
+      <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Open settings">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M19.14 12.94a7.14 7.14 0 0 0 .06-.94 7.14 7.14 0 0 0-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.63l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.62-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54a7.3 7.3 0 0 0-1.62.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.85a.5.5 0 0 0 .12.63l2.03 1.58a7.14 7.14 0 0 0 0 1.88L2.83 14.5a.5.5 0 0 0-.12.63l1.92 3.32a.5.5 0 0 0 .6.22l2.39-.96c.5.4 1.04.71 1.62.94l.36 2.54a.5.5 0 0 0 .5.42h3.84a.5.5 0 0 0 .5-.42l.36-2.54a7.3 7.3 0 0 0 1.62-.94l2.39.96a.5.5 0 0 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.63l-2.03-1.56zM12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============ MAIN LAYOUT ============ -->
+  <main class="layout">
+
+    <!-- Left: Scoreboard -->
+    <aside class="panel glass scoreboard" id="scoreboard">
+      <h2 class="panel-title">Scoreboard</h2>
+      <div class="score-row" data-player="1">
+        <span class="score-dot chip-red"></span>
+        <span class="score-name">Player 1</span>
+      </div>
+      <div class="score-grid">
+        <div><span id="p1Wins">0</span><label>Wins</label></div>
+        <div><span id="p1Losses">0</span><label>Losses</label></div>
+      </div>
+      <div class="score-row" data-player="2">
+        <span class="score-dot chip-blue"></span>
+        <span class="score-name" id="p2NameLabel">Player 2</span>
+      </div>
+      <div class="score-grid">
+        <div><span id="p2Wins">0</span><label>Wins</label></div>
+        <div><span id="p2Losses">0</span><label>Losses</label></div>
+      </div>
+      <div class="score-divider"></div>
+      <div class="score-row total">
+        <span class="score-name">Games Played</span>
+        <span id="gamesPlayed">0</span>
+      </div>
+      <div class="score-row total">
+        <span class="score-name">Cards in Deck</span>
+        <span id="deckCount">0</span>
+      </div>
+
+      <div class="mode-select">
+        <h3 class="panel-title small">Opponent</h3>
+        <select id="opponentMode" class="select-input">
+          <option value="human">Human (2 Players)</option>
+          <option value="easy">AI &mdash; Easy</option>
+          <option value="medium">AI &mdash; Medium</option>
+          <option value="hard">AI &mdash; Hard</option>
+        </select>
+      </div>
+    </aside>
+
+    <!-- Center: Board -->
+    <section class="board-wrap">
+      <div class="board-frame glass">
+        <div class="board" id="board" aria-label="Sequence board"></div>
+      </div>
+
+      <!-- Opponent hand (top strip, above board on small screens hidden) -->
+      <div class="hand-strip opponent-strip" id="opponentStrip">
+        <span class="hand-label">Player 2's Hand</span>
+        <div class="hand-cards" id="opponentHand"></div>
+      </div>
+
+      <!-- Current player's hand -->
+      <div class="hand-strip glass" id="handStrip">
+        <div class="hand-strip-top">
+          <span class="hand-label" id="handOwnerLabel">Player 1's Hand</span>
+          <span class="hand-hint" id="handHint">Select a card, then tap a board space</span>
+        </div>
+        <div class="hand-cards" id="playerHand"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating deck / draw pile -->
+  <div class="deck-float glass" id="deckFloat">
+    <div class="deck-card" id="deckVisual"></div>
+    <span class="deck-count" id="deckFloatCount">104</span>
+  </div>
+
+</div>
+
+<!-- ============ SETTINGS DRAWER ============ -->
+<div class="drawer-overlay" id="drawerOverlay">
+  <div class="drawer glass" id="settingsDrawer">
+    <div class="drawer-head">
+      <h2>Settings</h2>
+      <button class="icon-btn" id="closeSettingsBtn" aria-label="Close settings">&times;</button>
+    </div>
+
+    <div class="drawer-section">
+      <label class="drawer-row">
+        <span>Theme</span>
+        <button class="toggle-btn" id="themeToggleBtn">Dark</button>
+      </label>
+      <label class="drawer-row">
+        <span>Sound Effects</span>
+        <button class="toggle-btn" id="soundDrawerToggle">On</button>
+      </label>
+      <label class="drawer-row">
+        <span>Volume</span>
+        <input type="range" id="volumeSlider" min="0" max="100" value="60">
+      </label>
+    </div>
+
+    <div class="drawer-section">
+      <button class="drawer-btn primary" id="restartBtn">Restart Game</button>
+      <button class="drawer-btn" id="newMatchBtn">New Match</button>
+      <button class="drawer-btn danger" id="resetScoresBtn">Reset Scores</button>
+    </div>
+
+    <div class="drawer-section rules">
+      <h3>Quick Rules</h3>
+      <p>Play a card from your hand, then place a chip on a matching space. Two-eyed Jacks are wild &mdash; place anywhere. One-eyed Jacks remove an opponent chip. Line up 5 in a row (including free corners) to complete a Sequence and win.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WINNER MODAL ============ -->
+<div class="modal-overlay" id="winnerOverlay">
+  <div class="confetti-field" id="confettiField"></div>
+  <div class="winner-modal glass">
+    <div class="winner-badge" id="winnerBadge">&#9813;</div>
+    <h2 id="winnerTitle">Player 1 Wins!</h2>
+    <p id="winnerSub">Completed a Sequence of five</p>
+    <button class="drawer-btn primary" id="playAgainBtn">Play Again</button>
+  </div>
+</div>
+
+<!-- Toast for illegal move feedback -->
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
